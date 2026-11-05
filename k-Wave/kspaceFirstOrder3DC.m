@@ -206,6 +206,15 @@ end
 % anything else
 if ~exist([binary_path, binary_name], 'file')
     
+    % the MLX binary (default GPU binary on macOS) is not distributed on
+    % www.k-wave.org, give build instructions instead
+    if strcmp(binary_name, 'kspaceFirstOrder-MLX')
+        error(['The binary file ' binary_name ' could not be found in ' binary_path ...
+            '. To run GPU simulations on macOS, build kspaceFirstOrder-MLX from https://github.com/spichardo/kWave-MLX ' ...
+            '(brew install mlx hdf5 libomp cmake; cd kspaceFirstOrder-MLX; cmake -S . -B build; cmake --build build) and copy build/kspaceFirstOrder-MLX ' ...
+            'into the binaries folder, or set the optional input ''BinaryPath''.']);
+    end
+    
     error(['The binary file ' binary_name ' could not be found in ' binary_path ...
         '. To use the C++ code, the C++ binaries for your operating system must be downloaded from www.k-wave.org/download.php and placed in the binaries folder.']);
     

@@ -24,7 +24,14 @@ function sensor_data = kspaceFirstOrder2DG(varargin)
 %     directory of the k-Wave toolbox (the 2D and 3D code use the same
 %     binary). Alternatively, the name and location of the binary can be
 %     specified using the optional input parameters 'BinaryName' and
-%     'BinariesPath'.
+%     'BinaryPath'.
+%
+%     On macOS, the binary kspaceFirstOrder-MLX is used instead. This is a
+%     port of kspaceFirstOrder-CUDA to Apple's MLX framework that runs on
+%     the Apple Silicon GPU (Metal) and uses the same input/output files
+%     and options. It must be built from
+%     https://github.com/spichardo/kWave-MLX and placed in the "binaries"
+%     directory of the k-Wave toolbox (or selected using 'BinaryPath').
 %
 % USAGE:
 %     see kspaceFirstOrder2D and kspaceFirstOrder3DC
@@ -65,7 +72,11 @@ end
 % Check for the binary name input. If not defined, set the default name of
 % the GPU binary
 if ~any(strcmp('BinaryName', varargin))
-    if isunix
+    if ismac
+        % on macOS, use the MLX port of kspaceFirstOrder-CUDA, which runs
+        % on the Apple Silicon GPU (Metal)
+        varargin = [varargin {'BinaryName', 'kspaceFirstOrder-MLX'}];
+    elseif isunix
         varargin = [varargin {'BinaryName', 'kspaceFirstOrder-CUDA'}];
     else
         varargin = [varargin {'BinaryName', 'kspaceFirstOrder-CUDA.exe'}];
